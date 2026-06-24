@@ -1,0 +1,74 @@
+{% extends 'home/base.html' %}
+{% block title %}Leaderboard - Quizy.com{% endblock title %}
+{% block body %}
+
+<div class="col-md-10 mx-auto mt-4">
+    <div class="card box_shadow">
+        <div class="card-header bg-primary text-white text-center py-3">
+            <h3 class="mb-0 fw-bold">Leaderboard</h3>
+            <p class="mb-0 text-white-50">Top 20 scores across all quizzes</p>
+        </div>
+        <div class="card-body p-0">
+            {% if top_scores %}
+            <table class="table table-hover mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="text-center" scope="col">#</th>
+                        <th scope="col">Player</th>
+                        <th scope="col">Category</th>
+                        <th class="text-center" scope="col">Score</th>
+                        <th class="text-center" scope="col">Total Marks</th>
+                        <th class="text-center" scope="col">Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for quiz in top_scores %}
+                    <tr {% if forloop.counter == 1 %}class="table-warning fw-bold"{% elif forloop.counter == 2 %}class="table-light fw-semibold"{% elif forloop.counter == 3 %}class="table-light"{% endif %}>
+                        <td class="text-center align-middle">
+                            {% if forloop.counter == 1 %}
+                                <span class="fs-5">🥇</span>
+                            {% elif forloop.counter == 2 %}
+                                <span class="fs-5">🥈</span>
+                            {% elif forloop.counter == 3 %}
+                                <span class="fs-5">🥉</span>
+                            {% else %}
+                                {{ forloop.counter }}
+                            {% endif %}
+                        </td>
+                        <td class="align-middle">
+                            <span class="fw-semibold">{{ quiz.user.username|title }}</span>
+                        </td>
+                        <td class="align-middle">
+                            <span class="badge bg-secondary">{{ quiz.category.name|title }}</span>
+                        </td>
+                        <td class="text-center align-middle fw-bold text-primary">
+                            {{ quiz.marks }}
+                        </td>
+                        <td class="text-center align-middle text-muted">
+                            {{ quiz.category.total_marks }}
+                        </td>
+                        <td class="text-center align-middle">
+                            {% if quiz.category.total_marks > 0 %}
+                                {% widthratio quiz.marks quiz.category.total_marks 100 %}%
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="text-center py-5">
+                <p class="text-muted fs-5">No completed quizzes yet. Be the first to get on the board!</p>
+                <a href="{% url 'index' %}" class="btn btn-primary mt-2">Take a Quiz</a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="card-footer text-center">
+            <a href="{% url 'index' %}" class="btn btn-outline-primary">Back to Home</a>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}
